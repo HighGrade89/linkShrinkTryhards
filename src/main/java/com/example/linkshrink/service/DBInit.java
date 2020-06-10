@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.zip.Adler32;
+import java.util.zip.Checksum;
 
 @Service
 public class DBInit {
@@ -16,13 +18,28 @@ public class DBInit {
 
     @PostConstruct
     public void initDB () {
-        Weblink weblink1 = new Weblink("http://ya.ru");
+        String url;
+        Checksum checksum = new Adler32();
+
+        url = "http://ya.ru";
+        checksum.update(url.getBytes());
+        Weblink weblink1 = new Weblink(url, Long.toHexString(checksum.getValue()));
         webLinkRepo.save(weblink1);
 
-        Weblink weblink2 = new Weblink("http://google.com");
+        url = "http://google.com";
+        checksum.update(url.getBytes());
+        Weblink weblink2 = new Weblink(url, Long.toHexString(checksum.getValue()));
         webLinkRepo.save(weblink2);
 
-        Weblink weblink3 = new Weblink("http://spring.io");
+        url = "http://spring.io";
+        checksum.update(url.getBytes());
+        Weblink weblink3 = new Weblink(url, Long.toHexString(checksum.getValue()));
         webLinkRepo.save(weblink3);
+
+        url = "https://www.google.com/search?q=base16&oq=base1&aqs=chrome.1.69i57j0l7.8613j0j7&sourceid=chrome&ie=UTF-8";
+        checksum.update(url.getBytes());
+        Weblink weblink4 = new Weblink(url, Long.toHexString(checksum.getValue()));
+        webLinkRepo.save(weblink4);
+
     }
 }
