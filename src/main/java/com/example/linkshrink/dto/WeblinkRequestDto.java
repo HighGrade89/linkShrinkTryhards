@@ -11,6 +11,6 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class WeblinkRequestDto {
 
-    private String shrinkedLink;
+    private String fullLink;
 
 }

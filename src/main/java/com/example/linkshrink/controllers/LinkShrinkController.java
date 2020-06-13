@@ -7,12 +7,13 @@ import com.example.linkshrink.exception.InvalidURLException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import org.apache.commons.validator.routines.UrlValidator;
+import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +24,23 @@ public class LinkShrinkController {
     private LinkShrinkService linkShrinkService;
 
     private final MapperFacade mapperFacade;
+
+    @GetMapping("/")
+    public String welcome(Model model) {
+        model.addAttribute("linkShrinkFormHandler", new LinkShrinkFormHandler());
+        return "index";
+    }
+
+    @PostMapping("/")
+    public String fullLinkSubmit(@ModelAttribute(value = "linkShrinkFormHandler") LinkShrinkFormHandler linkShrinkFormHandler) {
+        Weblink result = linkShrinkService.add(linkShrinkFormHandler.getIboundFullLink());
+        String shortURL = result.getShortURL();
+        String resultingShortLink = "http://localhost:8080/"+shortURL;
+
+        linkShrinkFormHandler.setIboundFullLink("");
+        linkShrinkFormHandler.setResultingShortLink(resultingShortLink);
+        return "index";
+    }
 
     @RequestMapping(value="/all", method = RequestMethod.GET, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
@@ -53,6 +71,6 @@ public class LinkShrinkController {
     @ResponseBody
     public ModelAndView resolve(@PathVariable String shrinked) {
         Weblink weblink = linkShrinkService.resolve(shrinked);
-        return new ModelAndView("redirect:"+weblink.getFullLink());
+        return new ModelAndView("redirect:"+weblink.getFullURL());
     }
 }

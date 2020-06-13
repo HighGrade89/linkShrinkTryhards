@@ -25,23 +25,23 @@ public class Weblink implements Serializable {
     @Getter
     @Setter
     @Column
-    private String fullLink;
+    private String fullURL;
 
     @Getter
     @Setter
     @Column
     @GeneratedValue(strategy = AUTO)
-    private String shrinkedLink;
+    private String shortURL;
 
     public Weblink() {
     }
 
-    public Weblink(String fullLink) {
-        this.fullLink = fullLink;
+    public Weblink(String fullURL) {
+        this.fullURL = fullURL;
     }
 
-    public Weblink(String fullLink, String shrinkedLink) {
-        this.fullLink = fullLink;
-        this.shrinkedLink = shrinkedLink;
+    public Weblink(String fullURL, String shortURL) {
+        this.fullURL = fullURL;
+        this.shortURL = shortURL;
     }
 }

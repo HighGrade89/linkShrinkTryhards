@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WeblinkResponseDto {
-    private String fullLInk;
+    private String fullLink;
 }

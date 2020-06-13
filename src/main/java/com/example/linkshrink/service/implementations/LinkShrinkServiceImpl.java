@@ -32,21 +32,18 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
         return (ArrayList<Weblink>) webLinkRepo.findAll();
     }
 
-    @Override
-    public Weblink add(Weblink weblink) {
-
-        String fullLink = weblink.getFullLink();
+    private Weblink save(String fullURL) {
         Weblink result;
 
         String[] schemes = {"http","https"};
         UrlValidator urlValidator = new UrlValidator(schemes);
-        if (urlValidator.isValid(fullLink) == false) {
+        if (!urlValidator.isValid(fullURL)) {
             throw new InvalidURLException();
         }
 
-        Weblink someLink = webLinkRepo.findWeblinkByFullLink(fullLink);
+        Weblink someLink = webLinkRepo.findWeblinkByFullURL(fullURL);
         if (someLink == null) {
-            Weblink newWebLink = new Weblink(fullLink, shrinker.shrink(fullLink));
+            Weblink newWebLink = new Weblink(fullURL, shrinker.shrink(fullURL));
             webLinkRepo.save(newWebLink);
             result = newWebLink;
         } else {
@@ -57,9 +54,19 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     }
 
     @Override
+    public Weblink add (String iboundFullLink) {
+        return save(iboundFullLink);
+    }
+
+    @Override
+    public Weblink add(Weblink weblink) {
+        return save(weblink.getFullURL());
+    }
+
+    @Override
     public Weblink resolve(String shrinkedLink) {
         Weblink result;
-        Weblink requestedWebLink = webLinkRepo.findWeblinkByShrinkedLink(shrinkedLink);
+        Weblink requestedWebLink = webLinkRepo.findWeblinkByShortURL(shrinkedLink);
 
         if (requestedWebLink == null) {
             throw new URLNotFoundException();

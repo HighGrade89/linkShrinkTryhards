@@ -11,6 +11,7 @@ public interface LinkShrinkService {
 
     //Добавляет в базу ссылку, возвращая сокращенное представление
     Weblink add(Weblink weblink);
+    Weblink add(String inboundFullLink);
 
     Weblink resolve(String shrinkedLink);
 
