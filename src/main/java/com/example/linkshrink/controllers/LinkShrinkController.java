@@ -7,6 +7,7 @@ import com.example.linkshrink.exception.InvalidURLException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,16 @@ public class LinkShrinkController {
     private LinkShrinkService linkShrinkService;
 
     private final MapperFacade mapperFacade;
+
+    @Autowired
+    AmqpTemplate template;
+
+    @GetMapping("/amqptest")
+    @ResponseBody
+    String queue1() {
+        template.convertAndSend("queue1", "someMessage");
+        return "sent";
+    }
 
     @GetMapping("/")
     public String welcome(Model model) {
