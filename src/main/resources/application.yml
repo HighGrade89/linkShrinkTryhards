@@ -1,0 +1,15 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8081
+        enabled: true
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+logging:
+  root:
+    level: INFO

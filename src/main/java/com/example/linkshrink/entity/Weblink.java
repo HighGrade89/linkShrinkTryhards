@@ -1,6 +1,7 @@
 package com.example.linkshrink.entity;
 
 import lombok.*;
+import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 
 import static javax.persistence.GenerationType.AUTO;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -18,6 +19,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Weblink implements Serializable {
 
+    private static final int MAX_URL_LENGTH = 2083;
+
     @Id
     @Getter
     @GeneratedValue(strategy = IDENTITY)
@@ -25,7 +28,7 @@ public class Weblink implements Serializable {
 
     @Getter
     @Setter
-    @Column
+    @Column(length = MAX_URL_LENGTH)
     private String fullUrl;
 
     @Getter

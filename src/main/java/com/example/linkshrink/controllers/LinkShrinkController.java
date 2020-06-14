@@ -23,16 +23,22 @@ public class LinkShrinkController {
     @Autowired
     private LinkShrinkService linkShrinkService;
 
-    private final MapperFacade mapperFacade;
-
     @Autowired
     AmqpTemplate template;
 
-    @GetMapping("/amqptest")
+    private final MapperFacade mapperFacade;
+
+    @PostMapping("/q/add")
     @ResponseBody
-    String queue1() {
-        template.convertAndSend("queue1", "someMessage");
-        return "sent";
+    Weblink queuedAdd(@RequestBody Weblink weblink) {
+        Weblink result = (Weblink) template.convertSendAndReceive("queue1", weblink);
+        return result;
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public Weblink add(@RequestBody WeblinkResponseDto weblinkResponseDto) throws InvalidURLException {
+        return linkShrinkService.add(weblinkResponseDto.getFullUrl());
     }
 
     @GetMapping("/")
@@ -65,13 +71,7 @@ public class LinkShrinkController {
         return mapperFacade.map(linkShrinkService.getById(id), WeblinkResponseDto.class);
     }
 
-    @PostMapping(value = "/add")
-    @ResponseBody
-    public Weblink add(@RequestBody Weblink weblink) throws InvalidURLException {
-        return linkShrinkService.add(weblink);
-    }
-
-    @GetMapping(value = "{shrinked}")
+    @GetMapping("{shrinked}")
     @ResponseBody
     public ModelAndView resolve(@PathVariable String shrinked) {
         Weblink weblink = linkShrinkService.resolve(shrinked);
