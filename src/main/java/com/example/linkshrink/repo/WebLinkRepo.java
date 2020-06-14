@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository()
 public interface WebLinkRepo extends CrudRepository<Weblink, Long> {
-    Weblink findWeblinkByFullURL(String fullLink);
-    Weblink findWeblinkByShortURL(String shrinkedLink);
+    Weblink findWeblinkByFullUrl(String fullLink);
+    Weblink findWeblinkByShortUrlSuffux(String shrinkedLink);
     Weblink getWeblinkById(long id);
 }

@@ -9,11 +9,11 @@ import java.util.List;
 public interface LinkShrinkService {
     List<Weblink> findAll();
 
-    //Добавляет в базу ссылку, возвращая сокращенное представление
     Weblink add(Weblink weblink);
-    Weblink add(String inboundFullLink);
 
-    Weblink resolve(String shrinkedLink);
+    Weblink add(String fullUrl);
+
+    Weblink resolve(String shortLinkSuffix);
 
     Weblink getById(long id);
 

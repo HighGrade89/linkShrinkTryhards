@@ -8,14 +8,11 @@ import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import com.example.linkshrink.service.interfaces.Shrinker;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 @Service("linkShrinkService")
 @Transactional
@@ -32,41 +29,20 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
         return (ArrayList<Weblink>) webLinkRepo.findAll();
     }
 
-    private Weblink save(String fullURL) {
-        Weblink result;
-
-        String[] schemes = {"http","https"};
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        if (!urlValidator.isValid(fullURL)) {
-            throw new InvalidURLException();
-        }
-
-        Weblink someLink = webLinkRepo.findWeblinkByFullURL(fullURL);
-        if (someLink == null) {
-            Weblink newWebLink = new Weblink(fullURL, shrinker.shrink(fullURL));
-            webLinkRepo.save(newWebLink);
-            result = newWebLink;
-        } else {
-            result = someLink;
-        }
-
-        return result;
-    }
-
     @Override
-    public Weblink add (String iboundFullLink) {
-        return save(iboundFullLink);
+    public Weblink add (String fullUrl) {
+        return save(fullUrl);
     }
 
     @Override
     public Weblink add(Weblink weblink) {
-        return save(weblink.getFullURL());
+        return save(weblink.getFullUrl());
     }
 
     @Override
-    public Weblink resolve(String shrinkedLink) {
+    public Weblink resolve(String shortUrlSuffix) {
         Weblink result;
-        Weblink requestedWebLink = webLinkRepo.findWeblinkByShortURL(shrinkedLink);
+        Weblink requestedWebLink = webLinkRepo.findWeblinkByShortUrlSuffux(shortUrlSuffix);
 
         if (requestedWebLink == null) {
             throw new URLNotFoundException();
@@ -85,6 +61,28 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
         }
 
         return weblink;
+    }
+
+    private Weblink save(String fullUrl) {
+
+        Weblink result;
+
+        String[] schemes = {"http","https"};
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        if (!urlValidator.isValid(fullUrl)) {
+            throw new InvalidURLException();
+        }
+
+        Weblink someLink = webLinkRepo.findWeblinkByFullUrl(fullUrl);
+        if (someLink == null) {
+            Weblink newWebLink = new Weblink(fullUrl, shrinker.shrink(fullUrl));
+            webLinkRepo.save(newWebLink);
+            result = newWebLink;
+        } else {
+            result = someLink;
+        }
+
+        return result;
     }
 
 }

@@ -15,6 +15,7 @@ import java.io.Serializable;
 @Entity
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Weblink implements Serializable {
 
     @Id
@@ -25,23 +26,20 @@ public class Weblink implements Serializable {
     @Getter
     @Setter
     @Column
-    private String fullURL;
+    private String fullUrl;
 
     @Getter
     @Setter
     @Column
     @GeneratedValue(strategy = AUTO)
-    private String shortURL;
-
-    public Weblink() {
-    }
+    private String shortUrlSuffux;
 
     public Weblink(String fullURL) {
-        this.fullURL = fullURL;
+        this.fullUrl = fullURL;
     }
 
-    public Weblink(String fullURL, String shortURL) {
-        this.fullURL = fullURL;
-        this.shortURL = shortURL;
+    public Weblink(String fullUrl, String shortUrlSuffux) {
+        this.fullUrl = fullUrl;
+        this.shortUrlSuffux = shortUrlSuffux;
     }
 }

@@ -7,7 +7,6 @@ import com.example.linkshrink.exception.InvalidURLException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -34,15 +33,15 @@ public class LinkShrinkController {
     @PostMapping("/")
     public String fullLinkSubmit(@ModelAttribute(value = "linkShrinkFormHandler") LinkShrinkFormHandler linkShrinkFormHandler) {
         Weblink result = linkShrinkService.add(linkShrinkFormHandler.getIboundFullLink());
-        String shortURL = result.getShortURL();
-        String resultingShortLink = "http://localhost:8080/"+shortURL;
+        String shortUrlSuffu = result.getShortUrlSuffux();
+        String resultingShortLink = "http://localhost:8080/"+shortUrlSuffu;
 
         linkShrinkFormHandler.setIboundFullLink("");
         linkShrinkFormHandler.setResultingShortLink(resultingShortLink);
         return "index";
     }
 
-    @RequestMapping(value="/all", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value="/all")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Weblinks list() {
@@ -51,26 +50,20 @@ public class LinkShrinkController {
 
     @GetMapping("/id/{id}")
     @ResponseBody
-    public Weblink getById(@PathVariable(name = "id") long id) {
-        return linkShrinkService.getById(id);
-    }
-
-    @GetMapping("/mapped/id/{id}")
-    @ResponseBody
-    public WeblinkResponseDto getMappedById(@PathVariable(name = "id") long id) {
+    public WeblinkResponseDto resolveById(@PathVariable(name = "id") long id) {
         return mapperFacade.map(linkShrinkService.getById(id), WeblinkResponseDto.class);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     @ResponseBody
     public Weblink add(@RequestBody Weblink weblink) throws InvalidURLException {
         return linkShrinkService.add(weblink);
     }
 
-    @RequestMapping(value = "{shrinked}")
+    @GetMapping(value = "{shrinked}")
     @ResponseBody
     public ModelAndView resolve(@PathVariable String shrinked) {
         Weblink weblink = linkShrinkService.resolve(shrinked);
-        return new ModelAndView("redirect:"+weblink.getFullURL());
+        return new ModelAndView("redirect:"+weblink.getFullUrl());
     }
 }
