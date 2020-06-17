@@ -28,23 +28,11 @@ public class LinkShrinkController {
 
     private final MapperFacade mapperFacade;
 
-    @PostMapping("/q/add")
-    @ResponseBody
-    Weblink queuedAdd(@RequestBody Weblink weblink) {
-        Weblink result = (Weblink) template.convertSendAndReceive("queue1", weblink);
-        return result;
-    }
-
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public Weblink add(@RequestBody WeblinkResponseDto weblinkResponseDto) throws InvalidURLException {
-        return linkShrinkService.add(weblinkResponseDto.getFullUrl());
-    }
-
-    @GetMapping("/")
-    public String welcome(Model model) {
-        model.addAttribute("linkShrinkFormHandler", new LinkShrinkFormHandler());
-        return "index";
+    public Weblink add(@RequestBody Weblink weblink) throws InvalidURLException {
+        Weblink result = (Weblink) template.convertSendAndReceive("queue1", weblink);
+        return result;
     }
 
     @PostMapping("/")
@@ -55,6 +43,12 @@ public class LinkShrinkController {
 
         linkShrinkFormHandler.setIboundFullLink("");
         linkShrinkFormHandler.setResultingShortLink(resultingShortLink);
+        return "index";
+    }
+
+    @GetMapping("/")
+    public String welcome(Model model) {
+        model.addAttribute("linkShrinkFormHandler", new LinkShrinkFormHandler());
         return "index";
     }
 
