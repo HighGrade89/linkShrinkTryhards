@@ -28,27 +28,22 @@
 </nav>
 
 <div class="container">
-
     <form action="#" th:action="@{/}" th:object="${linkShrinkFormHandler}" method="post">
         <div class="form-group">
-            <label for="fullLink">Put your long URL here:</label>
-            <input type="text" class="form-control" id="fullLink" placeholder="Paste url here" th:field="*{iboundFullLink}">
+            <label for="inboundFullUrl">Put your long URL here:</label>
+            <input type="text" class="form-control" id="inboundFullUrl" placeholder="Paste url here" th:field="*{inboundFullUrl}">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
-
         <hr/>
-
         <div class="form-group">
-            <label for="shortUrl">Here's your short URL:</label>
-            <input type="text" class="form-control" id="shortUrl" placeholder="Submit long URL first" th:field="*{resultingShortLink}">
+            <label for="resultingShortUrl">Here's your short URL:</label>
+            <input type="text" class="form-control" id="resultingShortUrl" placeholder="Submit long URL first" th:field="*{resultingShortUrl}">
         </div>
     </form>
 
 </div>
-<!--/.container -->
 
-<script type="text/javascript"
-        src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </body>
 </html>

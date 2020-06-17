@@ -30,19 +30,33 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     }
 
     @Override
-    public Weblink add (String fullUrl) {
-        return save(fullUrl);
-    }
-
-    @Override
     public Weblink add(Weblink weblink) {
-        return save(weblink.getFullUrl());
+        Weblink result;
+
+        String fullUrl = weblink.getFullUrl();
+
+        String[] schemes = {"http","https"};
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        if (!urlValidator.isValid(fullUrl)) {
+            throw new InvalidURLException();
+        }
+
+        Weblink someLink = webLinkRepo.findWeblinkByFullUrl(fullUrl);
+        if (someLink == null) {
+            Weblink newWebLink = new Weblink(fullUrl, shrinker.shrink(fullUrl));
+            webLinkRepo.save(newWebLink);
+            result = newWebLink;
+        } else {
+            result = someLink;
+        }
+
+        return result;
     }
 
     @Override
     public Weblink resolve(String shortUrlSuffix) {
         Weblink result;
-        Weblink requestedWebLink = webLinkRepo.findWeblinkByShortUrlSuffux(shortUrlSuffix);
+        Weblink requestedWebLink = webLinkRepo.findWeblinkByShortUrlSuffix(shortUrlSuffix);
 
         if (requestedWebLink == null) {
             throw new URLNotFoundException();
@@ -61,28 +75,6 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
         }
 
         return weblink;
-    }
-
-    private Weblink save(String fullUrl) {
-
-        Weblink result;
-
-        String[] schemes = {"http","https"};
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        if (!urlValidator.isValid(fullUrl)) {
-            throw new InvalidURLException();
-        }
-
-        Weblink someLink = webLinkRepo.findWeblinkByFullUrl(fullUrl);
-        if (someLink == null) {
-            Weblink newWebLink = new Weblink(fullUrl, shrinker.shrink(fullUrl));
-            webLinkRepo.save(newWebLink);
-            result = newWebLink;
-        } else {
-            result = someLink;
-        }
-
-        return result;
     }
 
 }

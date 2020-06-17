@@ -1,12 +1,12 @@
 package com.example.linkshrink.controllers;
 
+import com.example.linkshrink.controllers.formhandler.LinkShrinkFormHandler;
 import com.example.linkshrink.dto.WeblinkResponseDto;
 import com.example.linkshrink.entity.Weblink;
 import com.example.linkshrink.entity.Weblinks;
 import com.example.linkshrink.exception.InvalidURLException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
-import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
+
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.ui.Model;
+
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,28 +31,30 @@ public class LinkShrinkController {
 
     private final MapperFacade mapperFacade;
 
+    @GetMapping("/")
+    public String welcome(Model model) {
+        model.addAttribute("linkShrinkFormHandler", new LinkShrinkFormHandler());
+        return "index";
+    }
+
+    @PostMapping("/")
+    public String fullLinkSubmit(@ModelAttribute(value = "linkShrinkFormHandler") LinkShrinkFormHandler linkShrinkFormHandler) {
+        Weblink inboundWebLink = mapperFacade.map(linkShrinkFormHandler, Weblink.class);
+        Weblink result = (Weblink) template.convertSendAndReceive("queue1", inboundWebLink);
+
+        String shortUrlSuffix = result.getShortUrlSuffix();
+        String resultingShortUrl = "http://localhost:8080/"+shortUrlSuffix;
+
+        linkShrinkFormHandler.setInboundFullUrl("");
+        linkShrinkFormHandler.setResultingShortUrl(resultingShortUrl);
+        return "index";
+    }
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public Weblink add(@RequestBody Weblink weblink) throws InvalidURLException {
         Weblink result = (Weblink) template.convertSendAndReceive("queue1", weblink);
         return result;
-    }
-
-    @PostMapping("/")
-    public String fullLinkSubmit(@ModelAttribute(value = "linkShrinkFormHandler") LinkShrinkFormHandler linkShrinkFormHandler) {
-        Weblink result = linkShrinkService.add(linkShrinkFormHandler.getIboundFullLink());
-        String shortUrlSuffu = result.getShortUrlSuffux();
-        String resultingShortLink = "http://localhost:8080/"+shortUrlSuffu;
-
-        linkShrinkFormHandler.setIboundFullLink("");
-        linkShrinkFormHandler.setResultingShortLink(resultingShortLink);
-        return "index";
-    }
-
-    @GetMapping("/")
-    public String welcome(Model model) {
-        model.addAttribute("linkShrinkFormHandler", new LinkShrinkFormHandler());
-        return "index";
     }
 
     @GetMapping(value="/all")
@@ -71,4 +76,5 @@ public class LinkShrinkController {
         Weblink weblink = linkShrinkService.resolve(shrinked);
         return new ModelAndView("redirect:"+weblink.getFullUrl());
     }
+
 }

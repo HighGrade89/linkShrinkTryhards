@@ -11,10 +11,7 @@ public interface LinkShrinkService {
 
     Weblink add(Weblink weblink);
 
-    Weblink add(String fullUrl);
-
     Weblink resolve(String shortLinkSuffix);
 
     Weblink getById(long id);
-
 }

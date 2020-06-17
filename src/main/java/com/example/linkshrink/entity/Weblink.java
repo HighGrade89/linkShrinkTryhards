@@ -35,14 +35,14 @@ public class Weblink implements Serializable {
     @Setter
     @Column
     @GeneratedValue(strategy = AUTO)
-    private String shortUrlSuffux;
+    private String shortUrlSuffix;
 
     public Weblink(String fullURL) {
         this.fullUrl = fullURL;
     }
 
-    public Weblink(String fullUrl, String shortUrlSuffux) {
+    public Weblink(String fullUrl, String shortUrlSuffix) {
         this.fullUrl = fullUrl;
-        this.shortUrlSuffux = shortUrlSuffux;
+        this.shortUrlSuffix = shortUrlSuffix;
     }
 }
