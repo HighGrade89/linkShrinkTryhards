@@ -2,6 +2,7 @@ package com.example.linkshrink.entity;
 
 import lombok.*;
 import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import static javax.persistence.GenerationType.AUTO;
 import static javax.persistence.GenerationType.IDENTITY;

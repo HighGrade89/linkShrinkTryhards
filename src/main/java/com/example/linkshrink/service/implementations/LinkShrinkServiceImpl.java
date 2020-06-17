@@ -31,13 +31,15 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
 
     @Override
     public Weblink add(Weblink weblink) {
-        Weblink result;
 
+        Weblink result;
         String fullUrl = weblink.getFullUrl();
 
         String[] schemes = {"http","https"};
         UrlValidator urlValidator = new UrlValidator(schemes);
         if (!urlValidator.isValid(fullUrl)) {
+            System.out.println(fullUrl);
+            System.out.println("Invalid url");
             throw new InvalidURLException();
         }
 

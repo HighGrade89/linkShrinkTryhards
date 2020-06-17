@@ -39,8 +39,8 @@ public class LinkShrinkController {
 
     @PostMapping("/")
     public String fullLinkSubmit(@ModelAttribute(value = "linkShrinkFormHandler") LinkShrinkFormHandler linkShrinkFormHandler) {
-        Weblink inboundWebLink = mapperFacade.map(linkShrinkFormHandler, Weblink.class);
-        Weblink result = (Weblink) template.convertSendAndReceive("queue1", inboundWebLink);
+        //Weblink weblink = mapperFacade.map(linkShrinkFormHandler, Weblink.class)
+        Weblink result = (Weblink) template.convertSendAndReceive("q1", linkShrinkFormHandler.getInboundFullUrl());
 
         String shortUrlSuffix = result.getShortUrlSuffix();
         String resultingShortUrl = "http://localhost:8080/"+shortUrlSuffix;
@@ -53,7 +53,10 @@ public class LinkShrinkController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public Weblink add(@RequestBody Weblink weblink) throws InvalidURLException {
-        Weblink result = (Weblink) template.convertSendAndReceive("queue1", weblink);
+        Weblink result = null;
+
+        result = (Weblink) template.convertSendAndReceive("q1", weblink);
+
         return result;
     }
 

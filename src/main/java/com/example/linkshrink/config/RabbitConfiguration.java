@@ -31,27 +31,14 @@ public class RabbitConfiguration {
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
-        return new RabbitTemplate(connectionFactory());
+        RabbitTemplate rt = new RabbitTemplate(connectionFactory());
+        return rt;
     }
 
     @Bean
     public Queue myQueue1() {
-        Queue q = new Queue("queue1");
-        q.addArgument("x-max-length", 100);
+        Queue q = new Queue("q1");
         return q;
-    }
-
-    @Bean
-    public SimpleMessageListenerContainer messageListenerContainer1() {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory());
-        container.setQueueNames("queue1");
-        container.setMessageListener(new MessageListener() {
-            public void onMessage(Message message) {
-                logger.info("received from queue1 : " + new String(message.getBody()));
-            }
-        });
-        return container;
     }
 
 }
