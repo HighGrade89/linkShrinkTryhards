@@ -25,9 +25,6 @@ public class ApplicationTests {
 
     @Test
     public void prepareData() {
-        Stream.of("https://vk.com/", "https://ya.ru/").forEach(
-                n -> webLinkRepo.save(new Weblink(n))
-        );
     }
 
 }

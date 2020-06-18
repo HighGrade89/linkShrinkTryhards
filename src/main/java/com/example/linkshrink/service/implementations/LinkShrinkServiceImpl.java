@@ -32,27 +32,22 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     @Override
     public Weblink add(Weblink weblink) {
 
-        Weblink result;
         String fullUrl = weblink.getFullUrl();
 
         String[] schemes = {"http","https"};
         UrlValidator urlValidator = new UrlValidator(schemes);
         if (!urlValidator.isValid(fullUrl)) {
-            System.out.println(fullUrl);
-            System.out.println("Invalid url");
             throw new InvalidURLException();
         }
 
-        Weblink someLink = webLinkRepo.findWeblinkByFullUrl(fullUrl);
-        if (someLink == null) {
-            Weblink newWebLink = new Weblink(fullUrl, shrinker.shrink(fullUrl));
-            webLinkRepo.save(newWebLink);
-            result = newWebLink;
-        } else {
-            result = someLink;
+        Weblink currentWebLink = webLinkRepo.findWeblinkByFullUrl(fullUrl);
+        if (currentWebLink != null) {
+            webLinkRepo.delete(currentWebLink);
         }
 
-        return result;
+        Weblink newWebLink = new Weblink(fullUrl, shrinker.shrink(fullUrl));
+        webLinkRepo.save(newWebLink);
+        return newWebLink;
     }
 
     @Override
