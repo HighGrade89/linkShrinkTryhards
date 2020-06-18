@@ -1,17 +1,17 @@
 package com.example.linkshrink.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import static javax.persistence.GenerationType.AUTO;
 import static javax.persistence.GenerationType.IDENTITY;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @Entity
@@ -27,23 +27,20 @@ public class Weblink implements Serializable {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Getter
-    @Setter
     @Column(length = MAX_URL_LENGTH)
     private String fullUrl;
 
-    @Getter
-    @Setter
     @Column
     @GeneratedValue(strategy = AUTO)
     private String shortUrlSuffix;
 
-    public Weblink(String fullURL) {
-        this.fullUrl = fullURL;
-    }
+    @Column
+    @CreationTimestamp
+    private Date addedAt;
 
     public Weblink(String fullUrl, String shortUrlSuffix) {
         this.fullUrl = fullUrl;
         this.shortUrlSuffix = shortUrlSuffix;
     }
+
 }

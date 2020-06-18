@@ -1,15 +1,16 @@
-package com.example.linkshrink.service;
+package com.example.linkshrink.service.auxiliary;
 
 import com.example.linkshrink.entity.Weblink;
 import com.example.linkshrink.repo.WebLinkRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
-@Service
+@Component
 public class DBInit {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -36,7 +37,7 @@ public class DBInit {
         Weblink weblink3 = new Weblink(url, Long.toHexString(checksum.getValue()));
         webLinkRepo.save(weblink3);
 
-        url = "https://www.google.com/search?q=base16&oq=base1&aqs=chrome.1.69i57j0l7.8613j0j7&sourceid=chrome&ie=UTF-8";
+        url = "https://stackoverflow.com/";
         checksum.update(url.getBytes());
         Weblink weblink4 = new Weblink(url, Long.toHexString(checksum.getValue()));
         webLinkRepo.save(weblink4);

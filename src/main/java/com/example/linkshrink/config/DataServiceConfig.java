@@ -37,6 +37,7 @@ public class DataServiceConfig {
         hibernateProperties.put("hibernate.max_fetch_depth", 3);
         hibernateProperties.put("hibernate.jdbc.batch_size", 10);
         hibernateProperties.put("hibernate.jdbc.fetch_size", 50);
+        hibernateProperties.put("hibernate.jdbc.time_zone", "UTC");
         return hibernateProperties;
     }
 
