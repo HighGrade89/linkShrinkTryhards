@@ -10,5 +10,5 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @Validated
 public class WeblinkRequestDto {
-    private String shortUrlSuffux;
+    private String shortUrlSuffix;
 }

@@ -1,6 +1,7 @@
 package com.example.linkshrink.controllers;
 
 import com.example.linkshrink.controllers.formhandler.LinkShrinkFormHandler;
+import com.example.linkshrink.dto.WeblinkRequestDto;
 import com.example.linkshrink.dto.WeblinkResponseDto;
 import com.example.linkshrink.entity.Weblink;
 import com.example.linkshrink.entity.Weblinks;
@@ -39,8 +40,8 @@ public class LinkShrinkController {
 
     @PostMapping("/")
     public String fullLinkSubmit(@ModelAttribute(value = "linkShrinkFormHandler") LinkShrinkFormHandler linkShrinkFormHandler) {
-        //Weblink weblink = mapperFacade.map(linkShrinkFormHandler, Weblink.class)
-        Weblink result = (Weblink) template.convertSendAndReceive("q1", linkShrinkFormHandler.getInboundFullUrl());
+        Weblink weblink = mapperFacade.map(linkShrinkFormHandler, Weblink.class);
+        Weblink result = (Weblink) template.convertSendAndReceive("q1", weblink);
 
         String shortUrlSuffix = result.getShortUrlSuffix();
         String resultingShortUrl = "http://localhost:8080/"+shortUrlSuffix;
@@ -53,19 +54,24 @@ public class LinkShrinkController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public Weblink add(@RequestBody Weblink weblink) throws InvalidURLException {
-        Weblink result = null;
-
-        result = (Weblink) template.convertSendAndReceive("q1", weblink);
-
-        return result;
+        return (Weblink) template.convertSendAndReceive("q1", weblink);
     }
 
-    @GetMapping(value="/all")
-    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/resolve", method = RequestMethod.GET)
     @ResponseBody
-    public Weblinks list() {
-        return new Weblinks(linkShrinkService.findAll());
+    public WeblinkResponseDto resolve(@RequestBody WeblinkRequestDto weblinkRequestDto) {
+        Weblink weblink = linkShrinkService.resolve(weblinkRequestDto.getShortUrlSuffix());
+        return mapperFacade.map(weblink, WeblinkResponseDto.class);
     }
+
+    @GetMapping("{shrinked}")
+    @ResponseBody
+    public ModelAndView resolveAndRedirect(@PathVariable String shrinked) {
+        Weblink weblink = linkShrinkService.resolve(shrinked);
+        return new ModelAndView("redirect:"+weblink.getFullUrl());
+    }
+
+    //-- for ez debugging --
 
     @GetMapping("/id/{id}")
     @ResponseBody
@@ -73,11 +79,11 @@ public class LinkShrinkController {
         return mapperFacade.map(linkShrinkService.getById(id), WeblinkResponseDto.class);
     }
 
-    @GetMapping("{shrinked}")
+    @GetMapping(value="/all")
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ModelAndView resolve(@PathVariable String shrinked) {
-        Weblink weblink = linkShrinkService.resolve(shrinked);
-        return new ModelAndView("redirect:"+weblink.getFullUrl());
+    public Weblinks listAll() {
+        return new Weblinks(linkShrinkService.findAll());
     }
 
 }
