@@ -7,6 +7,7 @@ import com.example.linkshrink.exception.URLNotFoundException;
 import com.example.linkshrink.repo.WebLinkRepo;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import com.example.linkshrink.service.interfaces.Shrinker;
+import com.example.linkshrink.service.interfaces.WeblinkValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     private WebLinkRepo webLinkRepo;
 
     @Autowired
+    private WeblinkValidator weblinkValidator;
+
+    @Autowired
     private Shrinker shrinker;
 
     @Transactional(readOnly = true)
@@ -37,10 +41,7 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     public Weblink add(Weblink weblink) {
 
         String fullUrl = weblink.getFullUrl();
-
-        String[] schemes = {"http","https"};
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        if (!urlValidator.isValid(fullUrl)) {
+        if (!weblinkValidator.isValid(fullUrl)) {
             throw new URLInvalidException();
         }
 
@@ -53,6 +54,7 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
         webLinkRepo.save(newWebLink);
         return newWebLink;
     }
+
 
     @Override
     public Weblink resolve(String shortUrlSuffix) {
