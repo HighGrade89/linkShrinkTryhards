@@ -36,7 +36,7 @@ public class Weblink implements Serializable {
 
     @Column
     @CreationTimestamp
-    private Date addedAt;
+    private Date addedTime;
 
     public Weblink(String fullUrl, String shortUrlSuffix) {
         this.fullUrl = fullUrl;

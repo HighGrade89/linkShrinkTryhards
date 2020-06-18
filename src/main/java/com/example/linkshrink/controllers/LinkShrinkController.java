@@ -1,12 +1,12 @@
 package com.example.linkshrink.controllers;
 
-import com.example.linkshrink.controllers.formhandler.LinkShrinkFormHandler;
 import com.example.linkshrink.dto.WeblinkRequestDto;
 import com.example.linkshrink.dto.WeblinkResponseDto;
+
 import com.example.linkshrink.entity.Weblink;
 import com.example.linkshrink.entity.Weblinks;
-import com.example.linkshrink.exception.InvalidURLException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
+import com.example.linkshrink.controllers.formhandler.LinkShrinkFormHandler;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.ui.Model;
-
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 
@@ -53,7 +52,7 @@ public class LinkShrinkController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public Weblink add(@RequestBody Weblink weblink) throws InvalidURLException {
+    public Weblink add(@RequestBody Weblink weblink) {
         return (Weblink) template.convertSendAndReceive("q1", weblink);
     }
 
@@ -64,10 +63,10 @@ public class LinkShrinkController {
         return mapperFacade.map(weblink, WeblinkResponseDto.class);
     }
 
-    @GetMapping("{shrinked}")
+    @GetMapping("{shortUrl}")
     @ResponseBody
-    public ModelAndView resolveAndRedirect(@PathVariable String shrinked) {
-        Weblink weblink = linkShrinkService.resolve(shrinked);
+    public ModelAndView resolveAndRedirect(@PathVariable String shortUrl) {
+        Weblink weblink = linkShrinkService.resolve(shortUrl);
         return new ModelAndView("redirect:"+weblink.getFullUrl());
     }
 

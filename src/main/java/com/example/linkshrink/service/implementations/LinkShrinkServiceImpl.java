@@ -1,7 +1,8 @@
 package com.example.linkshrink.service.implementations;
 
 import com.example.linkshrink.entity.Weblink;
-import com.example.linkshrink.exception.InvalidURLException;
+import com.example.linkshrink.exception.URLExpiredException;
+import com.example.linkshrink.exception.URLInvalidException;
 import com.example.linkshrink.exception.URLNotFoundException;
 import com.example.linkshrink.repo.WebLinkRepo;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
@@ -11,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service("linkShrinkService")
 @Transactional
 public class LinkShrinkServiceImpl implements LinkShrinkService {
+
+    private static int EXPIRATION_TIME_IN_MINUTES = 10;
 
     @Autowired
     private WebLinkRepo webLinkRepo;
@@ -37,7 +41,7 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
         String[] schemes = {"http","https"};
         UrlValidator urlValidator = new UrlValidator(schemes);
         if (!urlValidator.isValid(fullUrl)) {
-            throw new InvalidURLException();
+            throw new URLInvalidException();
         }
 
         Weblink currentWebLink = webLinkRepo.findWeblinkByFullUrl(fullUrl);
@@ -57,10 +61,17 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
 
         if (requestedWebLink == null) {
             throw new URLNotFoundException();
-        } else {
-            result = requestedWebLink;
         }
 
+        Instant creationTimeInstant = requestedWebLink.getAddedTime().toInstant();
+        LocalTime expirationTime = LocalTime.ofInstant(creationTimeInstant, ZoneOffset.UTC)
+                .plusMinutes(EXPIRATION_TIME_IN_MINUTES);
+
+        if (Duration.between(LocalTime.now(ZoneOffset.UTC), expirationTime).toMinutes() > 0) {
+            throw new URLExpiredException();
+        }
+
+        result = requestedWebLink;
         return result;
     }
 

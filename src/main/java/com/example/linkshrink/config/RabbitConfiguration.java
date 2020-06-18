@@ -3,9 +3,7 @@ package com.example.linkshrink.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.apache.log4j.Logger;
 import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -14,7 +12,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @Configuration
 public class RabbitConfiguration {
-    Logger logger = Logger.getLogger(RabbitConfiguration.class);
 
     @Bean
     public ConnectionFactory connectionFactory() {
