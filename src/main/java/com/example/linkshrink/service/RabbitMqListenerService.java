@@ -1,6 +1,7 @@
 package com.example.linkshrink.service;
 
 import com.example.linkshrink.entity.Weblink;
+import com.example.linkshrink.exception.QueueOverflowException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import java.util.Properties;
 
@@ -23,6 +24,10 @@ public class RabbitMqListenerService {
     @RabbitListener(queues = "q1")
     public Weblink processQueue(Weblink weblink) {
         Properties properties = rabbitAdmin.getQueueProperties("q1");
+        Integer count = (Integer) properties.get("QUEUE_MESSAGE_COUNT");
+        if (count > 100 ) {
+            throw new QueueOverflowException();
+        }
         return linkShrinkService.add(weblink);
     }
 
