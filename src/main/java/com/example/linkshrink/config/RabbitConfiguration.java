@@ -3,6 +3,7 @@ package com.example.linkshrink.config;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.amqp.core.AmqpAdmin;
@@ -15,6 +16,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
  * Настройка брокера сообщений
  */
 @Configuration
+@ComponentScan(basePackages = {"com.example.linkshrink"})
 public class RabbitConfiguration {
 
     public static final String QUEUE_MESSAGES = "q1";
