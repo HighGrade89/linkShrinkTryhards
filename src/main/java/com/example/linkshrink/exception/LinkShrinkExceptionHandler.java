@@ -33,7 +33,7 @@ public class LinkShrinkExceptionHandler {
         return new ResponseEntity(new JsonExceptionPresenter(ErrorMessages.MAPPER_ERROR), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(Exception.class)
+    //@ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity handleRuntimeException(Exception exception) {
         String message = ErrorMessages.GENERAL_ERROR;

@@ -1,17 +1,19 @@
 package com.example.linkshrink.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * DTO запроса по полной ссылке
  */
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
+@Validated
 @NoArgsConstructor
+@AllArgsConstructor
 public class WeblinkSubmitDto {
+
+    @NotBlank
     private String fullUrl;
 }

@@ -1,18 +1,24 @@
 package com.example.linkshrink.dto;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * DTO получения Weblink по короткой ссылке
  */
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Validated
+@NoArgsConstructor
+@AllArgsConstructor
 public class WeblinkRequestDto {
+
+    @JsonProperty("shortUrl")
+    @NotBlank
     private String shortUrl;
 }

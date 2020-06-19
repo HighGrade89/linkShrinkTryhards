@@ -11,10 +11,8 @@ import com.example.linkshrink.exception.MappingErrorException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import com.example.linkshrink.controllers.formhandler.LinkShrinkFormHandler;
 
-import com.sun.istack.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,6 +23,9 @@ import org.springframework.ui.Model;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Основной контроллер
@@ -95,7 +96,7 @@ public class LinkShrinkController {
      */
     @RequestMapping(value = "/resolve", method = RequestMethod.GET)
     @ResponseBody
-    public WeblinkSubmitDto resolve(@Validated @NotNull @RequestBody WeblinkRequestDto weblinkRequestDto) throws MappingErrorException {
+    public WeblinkSubmitDto resolve(@Validated @RequestBody WeblinkRequestDto weblinkRequestDto) {
         Weblink shortWebLink = mapperFacade.map(weblinkRequestDto, Weblink.class);
 
         if (shortWebLink == null) {
