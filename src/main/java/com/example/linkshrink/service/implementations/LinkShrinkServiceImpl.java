@@ -44,7 +44,7 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     public Weblink add(String fullUrl) {
 
         if (!weblinkValidator.isValid(fullUrl)) {
-            throw new URLInvalidException();
+            throw new URLInvalidException(fullUrl);
         }
 
         Weblink currentWebLink = weblinkRepo.findWeblinkByFullUrl(fullUrl);

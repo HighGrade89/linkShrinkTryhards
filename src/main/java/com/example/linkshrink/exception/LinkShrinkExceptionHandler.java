@@ -23,7 +23,7 @@ public class LinkShrinkExceptionHandler {
     @ExceptionHandler(URLNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity handleURLNotFoundExcpetion(URLNotFoundException exception) {
-        String message = ErrorMessages.URL_NOT_FOUND + " " + exception.getShortUrlSuffix();
+        String message = ErrorMessages.URL_NOT_FOUND + " " + exception.getShortUrl();
         return new ResponseEntity(new JsonExceptionPresenter(message), HttpStatus.NOT_FOUND);
     }
 
@@ -33,7 +33,7 @@ public class LinkShrinkExceptionHandler {
         return new ResponseEntity(new JsonExceptionPresenter(ErrorMessages.MAPPER_ERROR), HttpStatus.NOT_FOUND);
     }
 
-    //@ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity handleRuntimeException(Exception exception) {
         String message = ErrorMessages.GENERAL_ERROR;
@@ -42,8 +42,9 @@ public class LinkShrinkExceptionHandler {
 
     @ExceptionHandler(URLInvalidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity handleInvalidUrlExpection(Exception exception){
-        return new ResponseEntity(new JsonExceptionPresenter(ErrorMessages.INBOUND_URL_INVALID), HttpStatus.BAD_REQUEST);
+    public ResponseEntity handleInvalidUrlException(URLInvalidException exception){
+        String message = ErrorMessages.URL_NOT_FOUND + " " + exception.getFullUrl();
+        return new ResponseEntity(new JsonExceptionPresenter(message), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(URLExpiredException.class)

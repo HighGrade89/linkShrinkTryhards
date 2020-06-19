@@ -1,15 +1,13 @@
 package com.example.linkshrink.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Исключение, сигнализирующее об отсутствиии запрашиваемой ссылки
  */
 @Getter
+@AllArgsConstructor
 public class URLNotFoundException extends RuntimeException {
-    private String shortUrlSuffix;
-
-    public URLNotFoundException(String shortUrlSuffix) {
-        this.shortUrlSuffix = shortUrlSuffix;
-    }
+    private String shortUrl;
 }

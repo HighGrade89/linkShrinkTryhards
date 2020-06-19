@@ -28,5 +28,4 @@ public class RabbitMqListenerService {
     public Weblink processQueue(String fullUrl) {
         return linkShrinkService.add(fullUrl);
     }
-
 }

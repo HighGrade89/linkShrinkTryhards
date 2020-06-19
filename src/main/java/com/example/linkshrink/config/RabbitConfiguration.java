@@ -1,6 +1,5 @@
 package com.example.linkshrink.config;
 
-import com.example.linkshrink.constants.HostName;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +21,7 @@ public class RabbitConfiguration {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory(HostName.hostname);
+        return new CachingConnectionFactory("localhost");
     }
 
     @Bean
@@ -36,12 +35,15 @@ public class RabbitConfiguration {
     }
 
     @Bean
+    public Queue myQueue1() {
+        return new Queue(QUEUE_MESSAGES);
+    }
+
+
     Queue messagesQueue() {
         return QueueBuilder.durable(QUEUE_MESSAGES)
                 .withArgument("max-length", 100)
                 .build();
     }
-
-
-
+    
 }
