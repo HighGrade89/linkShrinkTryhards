@@ -9,6 +9,9 @@ import javax.annotation.PostConstruct;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
+/**
+ * Добавление первичных значений в БД
+ */
 @Component
 public class DBInit {
 

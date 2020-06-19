@@ -4,6 +4,9 @@ import com.example.linkshrink.service.interfaces.WeblinkValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.stereotype.Component;
 
+/**
+ * Валидатор URL
+ */
 @Component
 public class HttpUrlValidator implements WeblinkValidator {
     private final String[] schemes = {"http","https"};
