@@ -4,11 +4,11 @@ import com.example.linkshrink.entity.Weblink;
 import com.example.linkshrink.exception.URLExpiredException;
 import com.example.linkshrink.exception.URLInvalidException;
 import com.example.linkshrink.exception.URLNotFoundException;
-import com.example.linkshrink.repo.WebLinkRepo;
+import com.example.linkshrink.repo.WeblinkRepo;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
 import com.example.linkshrink.service.interfaces.Shrinker;
 import com.example.linkshrink.service.interfaces.WeblinkValidator;
-import org.apache.commons.validator.routines.UrlValidator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +17,9 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сервис, реализующий целевой процесс приложения
+ */
 @Service("linkShrinkService")
 @Transactional
 public class LinkShrinkServiceImpl implements LinkShrinkService {
@@ -24,7 +27,7 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     private static int EXPIRATION_TIME_IN_MINUTES = 10;
 
     @Autowired
-    private WebLinkRepo webLinkRepo;
+    private WeblinkRepo weblinkRepo;
 
     @Autowired
     private WeblinkValidator weblinkValidator;
@@ -32,44 +35,47 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
     @Autowired
     private Shrinker shrinker;
 
-    @Transactional(readOnly = true)
-    public List<Weblink> findAll() {
-        return (ArrayList<Weblink>) webLinkRepo.findAll();
-    }
-
+    /**
+     * Добавление полностью заполненной сущности Weblink в базу данных
+     * @param fullUrl полный URL, для сокращения и добавления в базу
+     * @return сущность Weblink
+     */
     @Override
-    public Weblink add(Weblink weblink) {
+    public Weblink add(String fullUrl) {
 
-        String fullUrl = weblink.getFullUrl();
         if (!weblinkValidator.isValid(fullUrl)) {
             throw new URLInvalidException();
         }
 
-        Weblink currentWebLink = webLinkRepo.findWeblinkByFullUrl(fullUrl);
+        Weblink currentWebLink = weblinkRepo.findWeblinkByFullUrl(fullUrl);
         if (currentWebLink != null) {
-            webLinkRepo.delete(currentWebLink);
+            weblinkRepo.delete(currentWebLink);
         }
 
         Weblink newWebLink = new Weblink(fullUrl, shrinker.shrink(fullUrl));
-        webLinkRepo.save(newWebLink);
+        weblinkRepo.save(newWebLink);
         return newWebLink;
     }
 
-
+    /**
+     * Получение объекта с полной ссылкой по суффиксу короткой ссылки
+     * @param shortUrlSuffix суффик сокращенной ссылки
+     * @return сущность Weblink
+     */
     @Override
     public Weblink resolve(String shortUrlSuffix) {
         Weblink result;
-        Weblink requestedWebLink = webLinkRepo.findWeblinkByShortUrlSuffix(shortUrlSuffix);
+        Weblink requestedWebLink = weblinkRepo.findWeblinkByShortUrlSuffix(shortUrlSuffix);
 
         if (requestedWebLink == null) {
-            throw new URLNotFoundException();
+            throw new URLNotFoundException(shortUrlSuffix);
         }
 
         Instant creationTimeInstant = requestedWebLink.getAddedTime().toInstant();
         LocalTime expirationTime = LocalTime.ofInstant(creationTimeInstant, ZoneOffset.UTC)
                 .plusMinutes(EXPIRATION_TIME_IN_MINUTES);
 
-        if (Duration.between(LocalTime.now(ZoneOffset.UTC), expirationTime).toMinutes() > 0) {
+        if (Duration.between(LocalTime.now(ZoneOffset.UTC), expirationTime).toMinutes() < 0) {
             throw new URLExpiredException();
         }
 
@@ -77,14 +83,14 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
         return result;
     }
 
-    @Override
-    public Weblink getById(long id) {
-        Weblink weblink = webLinkRepo.getWeblinkById(id);
-        if (weblink == null) {
-            throw new URLNotFoundException();
-        }
-
-        return weblink;
+    /**
+     * Получение списка всех сохраненных ссылок
+     * @return список сущностей Weblink
+     */
+    @Transactional(readOnly = true)
+    public List<Weblink> findAll() {
+        return (ArrayList<Weblink>) weblinkRepo.findAll();
     }
+
 
 }

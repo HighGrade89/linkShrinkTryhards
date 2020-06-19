@@ -2,6 +2,9 @@ package com.example.linkshrink.controllers.formhandler;
 
 import lombok.*;
 
+/**
+ * Класс поддержи предавления Thymeleaf
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter

@@ -9,9 +9,8 @@ import java.util.List;
 public interface LinkShrinkService {
     List<Weblink> findAll();
 
-    Weblink add(Weblink weblink);
+    Weblink add(String fullUrl);
 
     Weblink resolve(String shortLinkSuffix);
 
-    Weblink getById(long id);
 }

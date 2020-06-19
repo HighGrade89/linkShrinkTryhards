@@ -1,10 +1,9 @@
 package com.example.linkshrink.service.auxiliary;
 
 import com.example.linkshrink.entity.Weblink;
-import com.example.linkshrink.repo.WebLinkRepo;
+import com.example.linkshrink.repo.WeblinkRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.zip.Adler32;
@@ -15,7 +14,7 @@ public class DBInit {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
-    private WebLinkRepo webLinkRepo;
+    private WeblinkRepo webLinkRepo;
 
     @PostConstruct
     public void initDB () {

@@ -10,6 +10,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * WebConfig
+ */
 @Configuration
 @ComponentScan(basePackages = {"com.example.linkshrink"})
 public class WebConfig {

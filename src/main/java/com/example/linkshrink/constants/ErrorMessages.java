@@ -1,12 +1,15 @@
 package com.example.linkshrink.constants;
 
+/**
+ * Содержит заданные сообщения об ошибках
+ */
 public class ErrorMessages {
 
-    public static final String GENERAL_ERROR = "[LINKSHRINK-E001] General error occured";
-    public static final String URL_NOT_FOUND = "[LINKSHRINK-E002] Url was not found";
-    public static final String INBOUND_URL_INVALID = "[LINKSHRINK-E003] Ivalid inbound url";
-    public static final String URL_HAS_EXPIRED = "[LINKSHRINK-E004] Url has expired";
-
+    public static final String GENERAL_ERROR = "[E500] Непредвиденная ошибка";
+    public static final String MAPPER_ERROR = "[E400] Некорректный запрос";
+    public static final String URL_NOT_FOUND = "[E001] URL не найден";
+    public static final String INBOUND_URL_INVALID = "[E002] Входящий URL некорректен";
+    public static final String URL_HAS_EXPIRED = "[E003] Время действия URL истекло";
 
     private  ErrorMessages() {}
 }

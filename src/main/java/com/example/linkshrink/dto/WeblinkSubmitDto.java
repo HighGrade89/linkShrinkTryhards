@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * DTO возвращения короткой ссылки по длинной ссылке
+ * DTO запроса по полной ссылке
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeblinkResponseDto {
-    private String shortUrl;
+public class WeblinkSubmitDto {
+    private String fullUrl;
 }

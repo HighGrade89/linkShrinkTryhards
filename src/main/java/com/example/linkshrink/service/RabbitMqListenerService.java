@@ -1,9 +1,7 @@
 package com.example.linkshrink.service;
 
 import com.example.linkshrink.entity.Weblink;
-import com.example.linkshrink.exception.QueueOverflowException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
-import java.util.Properties;
 
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -11,6 +9,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Листенер очереди
+ */
 @EnableRabbit
 @Component
 public class RabbitMqListenerService {
@@ -18,17 +19,14 @@ public class RabbitMqListenerService {
     @Autowired
     private LinkShrinkService linkShrinkService;
 
-    @Autowired
-    private AmqpAdmin rabbitAdmin;
-
+    /**
+     * Получение полного URL из очереди и передача в сервис
+     * @param fullUrl полный URL
+     * @return объект Weblink, содержащий сокращенный URL
+     */
     @RabbitListener(queues = "q1")
-    public Weblink processQueue(Weblink weblink) {
-        Properties properties = rabbitAdmin.getQueueProperties("q1");
-        Integer count = (Integer) properties.get("QUEUE_MESSAGE_COUNT");
-        if (count > 100 ) {
-            throw new QueueOverflowException();
-        }
-        return linkShrinkService.add(weblink);
+    public Weblink processQueue(String fullUrl) {
+        return linkShrinkService.add(fullUrl);
     }
 
 }

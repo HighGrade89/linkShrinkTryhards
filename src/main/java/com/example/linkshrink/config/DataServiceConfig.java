@@ -16,7 +16,9 @@ import javax.sql.DataSource;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
-
+/**
+ * Настройка окружения баз даннных
+ */
 @Configuration
 @EnableJpaRepositories(basePackages = {"com.example.linkshrink.repo"})
 @ComponentScan(basePackages = {"com.example.linkshrink"})

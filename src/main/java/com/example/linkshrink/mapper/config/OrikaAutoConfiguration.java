@@ -13,6 +13,9 @@ import com.example.linkshrink.mapper.MapperRegister;
 
 import java.util.List;
 
+/**
+ * Конфигурация Orika
+ */
 @Configuration
 @RequiredArgsConstructor
 public class OrikaAutoConfiguration {

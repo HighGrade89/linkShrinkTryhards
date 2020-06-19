@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
 
+/**
+ * Сервис сокращения ссылок
+ */
 @SpringBootApplication
 @Import(RabbitConfiguration.class)
 public class Application {
