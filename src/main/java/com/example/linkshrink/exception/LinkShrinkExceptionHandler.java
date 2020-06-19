@@ -49,7 +49,7 @@ public class LinkShrinkExceptionHandler {
     @ExceptionHandler(URLExpiredException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity handleUrlExpiredException(URLExpiredException exception) {
-        String message = ErrorMessages.URL_HAS_EXPIRED;
+        String message = ErrorMessages.URL_HAS_EXPIRED + " " + exception.getFullUrl();
         return new ResponseEntity(new JsonExceptionPresenter(message), HttpStatus.NOT_FOUND);
     }
 

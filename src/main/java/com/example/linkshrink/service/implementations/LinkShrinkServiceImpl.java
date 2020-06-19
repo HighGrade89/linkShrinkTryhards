@@ -76,7 +76,7 @@ public class LinkShrinkServiceImpl implements LinkShrinkService {
                 .plusMinutes(EXPIRATION_TIME_IN_MINUTES);
 
         if (Duration.between(LocalTime.now(ZoneOffset.UTC), expirationTime).toMinutes() < 0) {
-            throw new URLExpiredException();
+            throw new URLExpiredException(requestedWebLink.getFullUrl());
         }
 
         result = requestedWebLink;
