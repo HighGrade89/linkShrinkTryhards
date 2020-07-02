@@ -1,80 +1,36 @@
 package com.example.linkshrink.controllers;
 
-import com.example.linkshrink.constants.HostName;
 import com.example.linkshrink.dto.WeblinkRequestDto;
 import com.example.linkshrink.dto.WeblinkResponseDto;
-
 import com.example.linkshrink.dto.WeblinkSubmitDto;
 import com.example.linkshrink.entity.Weblink;
 import com.example.linkshrink.entity.Weblinks;
 import com.example.linkshrink.exception.MappingErrorException;
 import com.example.linkshrink.service.interfaces.LinkShrinkService;
-import com.example.linkshrink.controllers.formhandler.LinkShrinkFormHandler;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.ui.Model;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * Основной контроллер
  */
+
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/")
-public class LinkShrinkController {
+public class LinkShrinkRestController {
 
-    @Autowired
-    private LinkShrinkService linkShrinkService;
-
-    @Autowired
-    AmqpTemplate template;
-
+    private final LinkShrinkService linkShrinkService;
+    private final AmqpTemplate template;
     private final MapperFacade mapperFacade;
-
-    /**
-     * Возвращает индексную страницу
-     * @param model объект модели
-     * @return название шаблона
-     */
-    @GetMapping("/")
-    public String welcome(Model model) {
-        model.addAttribute("linkShrinkFormHandler", new LinkShrinkFormHandler());
-        log.info("Loading index");
-        return "index";
-    }
-
-    /**
-     * Обработчик нажатия кнопки добавления ссылки
-     * @param linkShrinkFormHandler объект поддержки формы
-     * @return название шаблона
-     */
-    @PostMapping("/")
-    public String fullLinkSubmit(@ModelAttribute(value = "linkShrinkFormHandler") LinkShrinkFormHandler linkShrinkFormHandler) {
-        String fullUrl = linkShrinkFormHandler.getInboundFullUrl();
-        Weblink weblink = (Weblink) template.convertSendAndReceive("q1", fullUrl);
-
-        log.info("Added "+weblink.getShortUrlSuffix() + " from " + weblink.getFullUrl());
-
-        String shortUrlSuffix = weblink.getShortUrlSuffix();
-        String resultingShortUrl = HostName.hostUrl+shortUrlSuffix;
-
-        linkShrinkFormHandler.setInboundFullUrl("");
-        linkShrinkFormHandler.setResultingShortUrl(resultingShortUrl);
-        return "index";
-    }
 
     /**
      * Эндпоинт добавления формирования короткой ссылки
@@ -106,19 +62,6 @@ public class LinkShrinkController {
         Weblink weblink = linkShrinkService.resolve(shortWebLink.getShortUrlSuffix());
         log.info("Resolved "+weblink.getFullUrl());
         return mapperFacade.map(weblink, WeblinkSubmitDto.class);
-    }
-
-    /**
-     * Эндпонт для перехода по короткой ссылке
-     * @param shortUrlSuffix - суффикс короткой ссылки
-     * @return объект редиректа
-     */
-    @GetMapping("{shortUrlSuffix}")
-    @ResponseBody
-    public ModelAndView resolveAndRedirect(@PathVariable String shortUrlSuffix) {
-        Weblink weblink = linkShrinkService.resolve(shortUrlSuffix);
-        log.info("Redirecting to "+weblink.getFullUrl());
-        return new ModelAndView("redirect:"+weblink.getFullUrl());
     }
 
     /**
